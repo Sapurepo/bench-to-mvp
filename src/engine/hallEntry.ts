@@ -1,9 +1,13 @@
 import type {
   Accessory,
+  Brows,
+  Ears,
+  Eyes,
   Face,
   GameState,
   HairStyle,
   Look,
+  Mouth,
   Position,
 } from './types'
 
@@ -60,6 +64,37 @@ const HAIR_STYLES: HairStyle[] = [
   'messy',
 ]
 const FACES: Face[] = ['fierce', 'calm', 'grin']
+// 부위도 Record 로 두어 타입에 새 값이 생기면 여기서 컴파일이 깨진다
+const EYES: Record<Eyes, true> = {
+  calm: true,
+  sharp: true,
+  round: true,
+  sleepy: true,
+  happy: true,
+  wink: true,
+}
+const BROWS: Record<Brows, true> = {
+  flat: true,
+  angry: true,
+  raised: true,
+  soft: true,
+  thick: true,
+}
+const EARS: Record<Ears, true> = {
+  normal: true,
+  small: true,
+  big: true,
+  pointy: true,
+}
+const MOUTHS: Record<Mouth, true> = {
+  flat: true,
+  smile: true,
+  open: true,
+  tight: true,
+  smirk: true,
+}
+const optPart = (v: unknown, all: Record<string, true>) =>
+  v === undefined || (typeof v === 'string' && Object.hasOwn(all, v))
 // 착용 가능한 액세서리 전부. Record 라 타입(types.ts Accessory)에 새로 생기면 여기서 컴파일이 깨진다
 const ACC_ALL: Record<Accessory, true> = {
   wrist: true,
@@ -81,6 +116,7 @@ const ACC_ALL: Record<Accessory, true> = {
   truckerCap: true,
   fedora: true,
   tights: true,
+  earring: true,
 }
 const ACCESSORIES = Object.keys(ACC_ALL) as Accessory[]
 // ponytail: 짧은 금칙어 목록만 거른다. 우회 표기까지 막으려면 신고·삭제 운영이나 외부 필터가 필요
@@ -146,6 +182,10 @@ function validLook(v: unknown): v is Look {
     isHex(l.hair) &&
     HAIR_STYLES.includes(l.hairStyle as HairStyle) &&
     FACES.includes(l.face as Face) &&
+    optPart(l.eyes, EYES) &&
+    optPart(l.brows, BROWS) &&
+    optPart(l.ears, EARS) &&
+    optPart(l.mouth, MOUTHS) &&
     Array.isArray(l.acc) &&
     l.acc.length <= ACCESSORIES.length &&
     l.acc.every((a) => ACCESSORIES.includes(a as Accessory)) &&

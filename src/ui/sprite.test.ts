@@ -93,6 +93,26 @@ describe('픽셀 스프라이트 v2', () => {
     }
   })
 
+  test('얼굴 부위·피어싱이 결과를 바꾸고, 이전 표정(face)은 같은 부위 조합과 똑같이 그려진다', () => {
+    const base = build(spec({ acc: [] }), 'idle', 0)
+    for (const over of [
+      { eyes: 'wink' },
+      { brows: 'thick' },
+      { ears: 'big' },
+      { mouth: 'open' },
+      { acc: ['earring'] },
+    ] as Partial<Spec>[])
+      expect(build(spec({ acc: [], ...over }), 'idle', 0)).not.toEqual(base)
+    // ROSTER[0] 은 fierce = 날카로운 눈 · 치켜뜬 눈썹 · 기본 입
+    expect(
+      build(
+        spec({ acc: [], eyes: 'sharp', brows: 'angry', mouth: 'flat' }),
+        'idle',
+        0,
+      ),
+    ).toEqual(base)
+  })
+
   test('로스터 24종은 모두 그릴 수 있다', () => {
     expect(ROSTER).toHaveLength(24)
     for (const r of ROSTER)
