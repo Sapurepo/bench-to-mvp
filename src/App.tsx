@@ -178,7 +178,39 @@ export default function App() {
             )}
           </div>
           <div className="site-info">
-            <b>{tr('벤치에서 파엠까지')}</b>
+            <div className="row">
+              <b>{tr('벤치에서 파엠까지')}</b>
+              <a
+                className="insta"
+                href="https://www.instagram.com/imthefinalmvp/"
+                target="_blank"
+                rel="noreferrer"
+                aria-label={tr('인스타그램')}
+                title={tr('인스타그램')}
+              >
+                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden>
+                  <rect
+                    x="3"
+                    y="3"
+                    width="18"
+                    height="18"
+                    rx="5"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="12"
+                    cy="12"
+                    r="4"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  />
+                  <circle cx="17.3" cy="6.7" r="1.2" fill="currentColor" />
+                </svg>
+              </a>
+            </div>
             <div className="row lang" role="group" aria-label="Language">
               {LANGS.map((l) => (
                 <button

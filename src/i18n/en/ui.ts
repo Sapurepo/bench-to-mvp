@@ -17,6 +17,7 @@ const text: Record<string, string> = {
   '게임 확률표': 'Odds',
   사이트맵: 'Sitemap',
   문의하기: 'Contact',
+  인스타그램: 'Instagram',
   '피드백 보내기': 'Send feedback',
   '광고 문의:': 'Ads:',
   '© 2026 imhyun. 학교, 구단, 대회 명칭과 로고에 대한 권리는 각 권리자에게 있으며, 서비스는 해당 권리자와 제휴하거나 후원을 받지 않습니다.':

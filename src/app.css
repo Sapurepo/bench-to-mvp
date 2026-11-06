@@ -195,9 +195,27 @@ footer .site-info {
   justify-items: start;
 }
 
-footer .site-info > b {
+footer .site-info b {
   font: 14px var(--font-pixel);
   color: var(--text);
+}
+
+/* 인스타그램 앱 아이콘 모양 (브랜드 그라데이션 + 흰 글리프).
+   .sns 는 시즌 결과 팬 반응 패널이 쓰므로 다른 이름 */
+footer .insta {
+  display: inline-grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  background: radial-gradient(
+    circle at 30% 107%,
+    #fdf497 0 5%,
+    #fd5949 45%,
+    #d6249f 60%,
+    #285aeb 90%
+  );
+  color: #fff;
 }
 
 footer .build {
