@@ -977,6 +977,23 @@ const text: Record<string, string> = {
   '2026년 10월 28일': 'October 28, 2026',
   '2026년 10월 기준 · 코드와 같은 수치':
     'As of October 2026 · same numbers as the code',
+  // ── 공지 1.6.0 ──
+  '선수 만들기의 아바타 단계가 새로워졌어요. 기본 캐릭터를 고른 뒤 피부·헤어·머리색·눈·눈썹·귀·입·장식을 부위별로 바꾸고, 랜덤으로 뽑거나 되돌릴 수 있어요. 귀 장식에 피어싱이 생겼고, 상점 아이템은 구매 후 착용할 수 있어요.':
+    'The avatar step of player creation is new. Pick a base character, then change skin, hairstyle, hair color, eyes, eyebrows, ears, mouth and accessories part by part, with Random and Undo. Earrings are a new ear accessory, and shop items can be worn after you buy them.',
+  '환호·패배 포즈에서 표정이 바뀌어도 고른 눈 모양은 그대로 남아요.':
+    'In cheer and defeat poses, your chosen eye shape now stays when the expression changes.',
+  '기본 정보 화면에서 내 선수 카드를 보며 정할 수 있어요. 포지션마다 신장 범위와 핵심 능력치, 스타일마다 능력치 보너스가 보이고, 고등학교는 지역별로 골라 볼 수 있어요.':
+    'The Basics step shows your player card as you choose. Each position lists its height range and key attributes, each style its attribute bonuses, and high schools can be filtered by region.',
+  '스카우팅 리포트에 능력치 육각형과 강점·보완이 생겼어요. 「능력치 재분배」가 「다시 뽑기」로 돌아왔고, 능력치를 −/+로 옮긴 뒤 「원안으로」 되돌릴 수 있어요.':
+    'The scouting report adds an attribute hexagon plus strengths and areas to improve. "Redistribute" is back to "Reroll", and after moving points with −/+ you can "Reset" to the original roll.',
+  '집중 능력치 화면에서 OVR이 오를 때 능력치마다 성장이 얼마씩 나눠지는지 볼 수 있어요.':
+    'The Focus step shows how growth is split across attributes for every OVR gained.',
+  '고등학교 18곳의 교표가 선수 만들기, 메인 화면, 경기 중계, 커리어 기록에 보여요.':
+    'The emblems of all 18 high schools now appear in player creation, on the main screen, in game broadcasts and in career records.',
+  '안양고 선수의 메인 화면에 프로 구단 로고가 보이던 문제를 고쳤어요.':
+    'Fixed a pro team logo showing on the main screen for Anyang High School players.',
+  '선수 만들기에서 이전·다음을 누르면 화면 맨 위부터 보이고, 일본어 화면에서 단어 중간이 끊기던 줄바꿈을 고쳤어요.':
+    'In player creation, Back and Next now return to the top of the screen, and Japanese text no longer breaks mid-word.',
   // ── 공지 1.4.0 ──
   '무대의 트로피는 상점에서 「트로피 선반」을 사야 보여요. 산 선반 위에 팀 우승·아시안게임 금메달 트로피가 쌓이고, 사기 전 미리보기에서도 내 트로피가 올라간 모습을 볼 수 있어요.':
     'Trophies on the stage now appear only after buying the Trophy Shelf in the shop. Team titles and Asian Games golds stack on the shelf you own, and the preview shows your trophies on it before you buy.',
