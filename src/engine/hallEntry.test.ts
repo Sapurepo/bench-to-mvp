@@ -88,6 +88,7 @@ test('착용 가능한 액세서리를 전부 단 외형도 통과한다 (1.4.0 
     'bucketHat',
     'truckerCap',
     'fedora',
+    'earring',
   ]
   const look = {
     skin: 2,
@@ -102,6 +103,27 @@ test('착용 가능한 액세서리를 전부 단 외형도 통과한다 (1.4.0 
   expect(validateHall({ ...p, look: { ...look, acc: ['crown'] } })).toBe(
     '외형 오류',
   )
+})
+
+test('아바타 꾸미기 부위(1.6)는 선택값이고, 목록에 없는 값은 거부한다', () => {
+  const look = {
+    skin: 0,
+    hair: '#2a2324',
+    hairStyle: 'crew' as const,
+    face: 'calm' as const,
+    eyes: 'wink' as const,
+    brows: 'thick' as const,
+    ears: 'pointy' as const,
+    mouth: 'smirk' as const,
+    acc: [],
+    num: 7,
+  }
+  const p = { ...toHallPayload(career()), look }
+  expect(validateHall(p)).toEqual(p)
+  for (const k of ['eyes', 'brows', 'ears', 'mouth'])
+    expect(validateHall({ ...p, look: { ...look, [k]: 'toString' } })).toBe(
+      '외형 오류',
+    )
 })
 
 test('기간 시작은 KST 기준 자정·월요일·1일', () => {

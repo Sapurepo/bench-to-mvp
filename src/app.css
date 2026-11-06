@@ -415,7 +415,7 @@ footer .link {
     inset 0 -2px 0 0 var(--lo);
 }
 
-:is(.primary, .ghost, .option, .btn-cmd):disabled {
+:is(.primary, .ghost, .option, .btn-cmd, .roster-card):disabled {
   --face: var(--panel-sunk);
   --hi: var(--panel-sunk);
   --lo: var(--line);
@@ -439,6 +439,11 @@ footer .link {
 .ghost {
   padding: 6px 12px;
   font: 13px var(--font-pixel);
+}
+
+/* 한 줄에 주 버튼과 나란히 있으면 높이를 맞춘다 (이전·다음, 취소·저장) */
+.row:has(> .primary) > .ghost {
+  align-self: stretch;
 }
 
 .ghost.big {
@@ -692,6 +697,8 @@ select {
 .kv {
   display: grid;
   grid-template-columns: auto 1fr;
+  /* 라벨(본문 글꼴)과 값(픽셀 글꼴)의 글자 높이가 달라 기준선으로 맞춘다 */
+  align-items: baseline;
   gap: 4px 16px;
 }
 
@@ -754,12 +761,6 @@ select {
 
 .seg-bar.elite > i.on {
   background: var(--gold);
-}
-
-/* 선수 생성: 값 양옆 −/+ 버튼 */
-.bars.adjust li {
-  grid-template-columns: var(--bar-label) minmax(0, 1fr) 30px 28px 30px;
-  gap: 6px;
 }
 
 .ghost.tiny {
@@ -5020,12 +5021,6 @@ button.spot:hover {
   font: 12px var(--font-pixel);
 }
 
-.roster {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 12px;
-}
-
 .roster-card {
   position: relative;
   display: grid;
@@ -5034,7 +5029,7 @@ button.spot:hover {
   padding: 14px 6px 10px;
 }
 
-.roster-card:hover:not([aria-pressed='true']) {
+.roster-card:hover:not([aria-pressed='true'], :disabled) {
   transform: translateY(-3px);
 }
 
@@ -5055,9 +5050,533 @@ button.spot:hover {
   font: 400 13px var(--font-pixel);
 }
 
-.roster-card small {
-  color: var(--gold-ink);
-  font: 11px var(--font-pixel);
+/* ── 생성 2~4단계 ── */
+
+.cs-card {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  align-items: stretch;
+}
+
+.cs-court {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 116px;
+  min-height: 184px;
+  margin: 3px;
+  padding-bottom: 6px;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-wall) 0,
+    var(--bg-wall) calc(100% - 32px),
+    var(--accent-lo) calc(100% - 32px),
+    var(--accent-lo) calc(100% - 29px),
+    var(--accent-soft) calc(100% - 29px)
+  );
+  box-shadow:
+    0 -3px 0 0 var(--ink),
+    0 3px 0 0 var(--ink),
+    -3px 0 0 0 var(--ink),
+    3px 0 0 0 var(--ink);
+}
+
+.cs-id {
+  flex: 1 1 170px;
+  min-width: 0;
+  display: grid;
+  gap: 8px;
+  align-content: center;
+}
+
+.cs-name {
+  overflow-wrap: anywhere;
+}
+
+.cs-pos,
+.cs-mono {
+  font: 12px var(--font-pixel);
+}
+
+.cs-pos {
+  font-size: 13px;
+}
+
+.cs-part {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.cs-line {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cs-field-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cs-field-head b {
+  font: 400 18px var(--font-pixel);
+  color: var(--ink);
+}
+
+.cs-warn {
+  color: var(--loss);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.cs-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.cs-grid .option {
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+}
+
+.cs-grid-pos {
+  grid-template-columns: repeat(auto-fill, minmax(var(--pos-card), 1fr));
+}
+
+.cs-grid .option .cs-pos-id {
+  font-size: 20px;
+}
+
+.cs-sub {
+  display: grid;
+  font-size: 12px;
+}
+
+/* 좁은 화면: 2열 카드엔 '슈팅가드'류 라벨이 안 들어가(일본어는 단어 중간에서 끊긴다) 한 줄 가로형으로 */
+@media (max-width: 480px) {
+  .cs-grid-pos {
+    grid-template-columns: 1fr;
+  }
+
+  .cs-grid-pos .option {
+    grid-template-columns: 52px minmax(0, 1fr);
+    column-gap: 10px;
+  }
+
+  .cs-grid-pos .option .cs-pos-id {
+    grid-row: span 3;
+    align-self: center;
+  }
+
+  .cs-grid-pos .cs-sub {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 8px;
+  }
+}
+
+.cs-grid-style {
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+}
+
+.cs-grid-school {
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+}
+
+.cs-school {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cs-school > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.cs-school b {
+  font-size: 14px;
+  overflow-wrap: anywhere;
+}
+
+.cs-grid-focus {
+  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+}
+
+.cs-gain {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin-top: 6px;
+}
+
+.cs-gain > span {
+  font: 400 20px var(--font-pixel);
+}
+
+.cs-scout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 14px;
+}
+
+.cs-wall {
+  flex: none;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: 76px;
+  height: 120px;
+  margin: 2px;
+  padding-bottom: 4px;
+  background: var(--bg-wall);
+  box-shadow:
+    0 -2px 0 0 var(--ink),
+    0 2px 0 0 var(--ink),
+    -2px 0 0 0 var(--ink),
+    2px 0 0 0 var(--ink);
+}
+
+.cs-scout .cs-id {
+  gap: 6px;
+}
+
+.ovr-shield.inline {
+  position: relative;
+  margin-left: auto;
+  right: auto;
+  top: auto;
+  z-index: auto;
+  flex: none;
+}
+
+.cs-left {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.cs-left small {
+  font-size: 12px;
+}
+
+.cs-left b {
+  font: 400 22px var(--font-pixel);
+}
+
+.cs-legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px 18px;
+  font: 12px var(--font-pixel);
+}
+
+.cs-legend span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.cs-key-fill {
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-lo);
+}
+
+.cs-key-dash {
+  width: 14px;
+  border-top: 2px dashed var(--ink);
+}
+
+.cs-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 2px 16px;
+}
+
+.cs-stat {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 30px 64px 30px;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 6px;
+  border-bottom: 2px solid var(--line);
+}
+
+.cs-stat:hover {
+  background: var(--panel-hi);
+}
+
+.cs-stat-name {
+  display: grid;
+  gap: 1px;
+  min-width: 0;
+}
+
+.cs-stat-name b {
+  font-size: 13px;
+}
+
+.cs-stat-name small {
+  font-size: 11px;
+}
+
+.cs-stat-val {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  font: 400 16px var(--font-pixel);
+}
+
+.cs-stat-val em,
+.cs-mod {
+  font: normal 11px var(--font-pixel);
+}
+
+.cs-mod {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+:is(.cs-stat-val em, .cs-mod).up {
+  color: var(--win);
+}
+
+:is(.cs-stat-val em, .cs-mod).down {
+  color: var(--loss);
+}
+
+.cs-range {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* 레이더: 라벨이 viewBox 밖으로 나가도 보이게 */
+.radar {
+  display: block;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  overflow: visible;
+  shape-rendering: crispEdges;
+}
+
+.radar-bg {
+  fill: var(--panel-hi);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.radar-ring {
+  fill: none;
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.radar-spoke {
+  stroke: var(--line);
+  stroke-width: 2;
+}
+
+.radar-spoke.on {
+  stroke: var(--accent-lo);
+  stroke-width: 3;
+}
+
+.radar-base {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-dasharray: 5 4;
+}
+
+.radar-cur {
+  fill: var(--accent);
+  fill-opacity: 0.45;
+  stroke: var(--accent-lo);
+  stroke-width: 3;
+}
+
+.radar-dot {
+  fill: var(--ink);
+}
+
+.radar-dot.on {
+  fill: var(--gold);
+  stroke: var(--ink);
+  stroke-width: 2;
+}
+
+.radar-tick {
+  font: 10px var(--font-pixel);
+  fill: var(--muted);
+}
+
+.radar-label {
+  font: 13px var(--font-pixel);
+  fill: var(--muted);
+}
+
+.radar-label.on {
+  fill: var(--accent-lo);
+}
+
+.radar-value {
+  font: 17px var(--font-pixel);
+  fill: var(--ink);
+}
+
+/* ── 아바타 꾸미기 ── */
+
+.av-name {
+  display: flex;
+  flex-wrap: wrap;
+  /* 이름(글자)과 등번호 입력칸(박스)은 기준선이 아니라 가운데로 맞춘다 */
+  align-items: center;
+  gap: 10px;
+}
+
+.av-name .num-field {
+  display: inline-flex;
+  align-items: center;
+}
+
+.av-stage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 벽 + 코트 바닥선 위에 선다 */
+.av-court {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 252px;
+  margin: 3px;
+  padding-bottom: 12px;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-wall) 0,
+    var(--bg-wall) calc(100% - 42px),
+    var(--accent-lo) calc(100% - 42px),
+    var(--accent-lo) calc(100% - 39px),
+    var(--accent-soft) calc(100% - 39px)
+  );
+  box-shadow:
+    0 -3px 0 0 var(--ink),
+    0 3px 0 0 var(--ink),
+    -3px 0 0 0 var(--ink),
+    3px 0 0 0 var(--ink);
+}
+
+.av-side {
+  flex: 1 1 190px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.av-face {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 2px;
+  padding: 12px 8px 8px;
+  background: var(--panel);
+  box-shadow:
+    0 -2px 0 0 var(--ink),
+    0 2px 0 0 var(--ink),
+    -2px 0 0 0 var(--ink),
+    2px 0 0 0 var(--ink);
+}
+
+.av-face figcaption {
+  font: 12px var(--font-pixel);
+}
+
+.av-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.av-editor {
+  gap: 20px;
+}
+
+.av-group {
+  display: grid;
+  gap: 10px;
+}
+
+.av-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.av-group-head h3 {
+  font: 400 14px var(--font-pixel);
+}
+
+.av-group-head small {
+  font-size: 12px;
+}
+
+.av-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.av-tiles .roster-card {
+  align-content: start;
+  padding: 12px 4px 8px;
+}
+
+.av-tiles .roster-card b {
+  text-align: center;
+  text-wrap: balance;
+  line-height: 1.3;
+}
+
+/* 상점 잠금: 꺼진 면 + 흑백 썸네일 */
+.av-tiles .roster-card:disabled img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.av-thumb {
+  display: block;
+  overflow: hidden;
+}
+
+.av-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.av-swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 /* ── 로고 ───────────────────────────────── */
@@ -6117,9 +6636,11 @@ footer .row.lang .link.current {
   font-family: 'Noto Sans JP', 'Noto Sans KR', system-ui, sans-serif;
 }
 
-/* 능력치 라벨 칸: 영어는 Rebounding·Athleticism 이 길어 넓힌다 */
+/* 능력치 라벨 칸: 영어는 Rebounding·Athleticism 이 길어 넓힌다
+   포지션 카드: 일본어는 シューティングガード 가 한 줄에 들어가야 해서 5열 대신 3열 */
 :root {
   --bar-label: 72px;
+  --pos-card: 100px;
 }
 
 :root:lang(en) {
@@ -6128,6 +6649,7 @@ footer .row.lang .link.current {
 
 :root:lang(ja) {
   --bar-label: 84px;
+  --pos-card: 150px;
 }
 
 /* 시즌 결과 아래 팬 반응 카드 */

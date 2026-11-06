@@ -27,7 +27,12 @@ export type HairStyle =
   | 'curtains'
   | 'afro'
   | 'messy'
+// 1.5 이전 외형의 표정. 지금은 눈·눈썹·입 부위가 비어 있을 때의 기본값으로만 쓴다
 export type Face = 'fierce' | 'calm' | 'grin'
+export type Eyes = 'calm' | 'sharp' | 'round' | 'sleepy' | 'happy' | 'wink'
+export type Brows = 'flat' | 'angry' | 'raised' | 'soft' | 'thick'
+export type Ears = 'normal' | 'small' | 'big' | 'pointy'
+export type Mouth = 'flat' | 'smile' | 'open' | 'tight' | 'smirk'
 // 뒤 8종은 상점 치장 아이템이 입힌다
 export type Accessory =
   | 'wrist'
@@ -49,12 +54,18 @@ export type Accessory =
   | 'truckerCap'
   | 'fedora'
   | 'tights'
+  | 'earring'
 export interface Look {
   // 피부 팔레트 인덱스 0~5
   skin: number
   hair: string
   hairStyle: HairStyle
   face: Face
+  // 아바타 꾸미기로 고른 부위. 비어 있으면 face 의 조합으로 그린다
+  eyes?: Eyes
+  brows?: Brows
+  ears?: Ears
+  mouth?: Mouth
   acc: Accessory[]
   num: number
   // 헤드밴드·손목밴드 색

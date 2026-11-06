@@ -1,4 +1,4 @@
-// 실명 사용: 학교명만. strength 는 게임 밸런스용 가상 수치이며 실제 전력 평가가 아니다.
+// 실명 사용: 학교명과 고교 교표(public/logos/hs, 각 학교 공식 홈페이지 학교상징). strength 는 게임 밸런스용 가상 수치이며 실제 전력 평가가 아니다.
 export interface School {
   id: string
   name: string

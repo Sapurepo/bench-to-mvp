@@ -1,4 +1,4 @@
-import type { Look } from '../engine/types'
+import type { Brows, Ears, Eyes, Face, Look, Mouth } from '../engine/types'
 
 // 픽셀 스프라이트 엔진 v2: 90년대 스포츠 만화 비율(약 4.5등신), 팀 유니폼, 등번호.
 // 파츠를 키 격자에 그림 → 셀 셰이딩(좌상단 광원) → 1px 잉크 외곽선 → PNG 데이터 URL.
@@ -225,6 +225,121 @@ const BALL = [
   '.AAaAA.',
   '..AaA..',
 ]
+
+// 얼굴 부위 (왼쪽 기준, 오른쪽은 거울). 눈 3×2: 왼쪽 x10·오른쪽 x15, y8. same 이면 오른쪽도 뒤집지 않는다
+const EYES: Record<Eyes, { l: string[]; r?: string[]; same?: boolean }> = {
+  calm: { l: ['EEE', '.I.'] },
+  sharp: { l: ['EEE', 'WIE'] },
+  round: { l: ['WEE', 'EEE'], same: true },
+  sleepy: { l: ['sss', 'EEE'] },
+  happy: { l: ['.E.', 'E.E'] },
+  wink: { l: ['EEE', 'WIE'], r: ['...', 'EEE'] },
+}
+// 눈썹 3×3, y5 (머리색)
+const BROWS: Record<Brows, string[]> = {
+  flat: ['...', 'HHH', '...'],
+  angry: ['...', 'HH.', '..H'],
+  raised: ['HH.', '..H', '...'],
+  soft: ['...', '.HH', 'H..'],
+  thick: ['HHH', 'HHH', '...'],
+}
+// 귀: 왼쪽 픽셀, inner = 귓속 그늘, ring = 피어싱 자리
+type Pt = [x: number, y: number]
+const EARS: Record<Ears, { px: Pt[]; inner?: Pt[]; ring: Pt }> = {
+  normal: {
+    px: [
+      [8, 7],
+      [8, 8],
+    ],
+    ring: [8, 9],
+  },
+  small: { px: [[8, 8]], ring: [8, 9] },
+  big: {
+    px: [
+      [8, 6],
+      [7, 7],
+      [7, 8],
+      [8, 9],
+    ],
+    inner: [
+      [8, 7],
+      [8, 8],
+    ],
+    ring: [7, 9],
+  },
+  pointy: {
+    px: [
+      [8, 7],
+      [8, 8],
+      [7, 6],
+      [7, 7],
+      [6, 5],
+    ],
+    ring: [8, 9],
+  },
+}
+// 입 [x, y, 색]. shout·sad 는 포즈 전용
+const MOUTHS: Record<Mouth | 'shout' | 'sad', [number, number, string][]> = {
+  flat: [
+    [12, 12, 'm'],
+    [13, 12, 'm'],
+    [14, 12, 'm'],
+  ],
+  smile: [
+    [12, 11, 'm'],
+    [13, 12, 'm'],
+    [14, 12, 'm'],
+    [15, 11, 'm'],
+  ],
+  open: [
+    [12, 11, 'E'],
+    [13, 11, 'W'],
+    [14, 11, 'W'],
+    [15, 11, 'E'],
+    [13, 12, 'Z'],
+    [14, 12, 'Z'],
+  ],
+  tight: [
+    [13, 12, 'm'],
+    [14, 12, 'm'],
+  ],
+  smirk: [
+    [12, 12, 'm'],
+    [13, 12, 'm'],
+    [14, 11, 'm'],
+  ],
+  shout: [
+    [12, 11, 'E'],
+    [13, 11, 'E'],
+    [14, 11, 'E'],
+    [15, 11, 'E'],
+    [13, 12, 'Z'],
+    [14, 12, 'Z'],
+  ],
+  sad: [
+    [13, 12, 'm'],
+    [14, 12, 'm'],
+    [12, 13, 'm'],
+    [15, 13, 'm'],
+  ],
+}
+// 1.5 이전 표정(face)은 부위 조합으로 그린다 (평상시 포즈는 픽셀이 이전과 같다)
+const FACE_PARTS: Record<Face, { eyes: Eyes; brows: Brows; mouth: Mouth }> = {
+  fierce: { eyes: 'sharp', brows: 'angry', mouth: 'flat' },
+  calm: { eyes: 'calm', brows: 'flat', mouth: 'flat' },
+  grin: { eyes: 'sharp', brows: 'raised', mouth: 'smile' },
+}
+// 실제로 그려지는 부위: 고른 값, 없으면 face 의 조합
+export function faceParts(l: Look) {
+  const f = FACE_PARTS[l.face] ?? FACE_PARTS.fierce
+  return {
+    eyes: l.eyes ?? f.eyes,
+    brows: l.brows ?? f.brows,
+    ears: l.ears ?? ('normal' as Ears),
+    mouth: l.mouth ?? f.mouth,
+  }
+}
+const rev = (r: string) => [...r].reverse().join('')
 
 function palette(s: Spec): Record<string, string> {
   const skin = SKINS[s.skin] ?? SKINS[0]
@@ -466,65 +581,35 @@ export function build(
     9,
     2 + U,
   )
-  rect(8, 7 + U, 8, 8 + U, 'S')
-  rect(19, 7 + U, 19, 8 + U, 's')
-
-  // 얼굴
-  const face =
-    pose === 'sad' || pose === 'bench'
-      ? 'sad'
-      : pose === 'cheer' || pose === 'trophy'
-        ? 'shout'
-        : pose === 'wave'
-          ? 'grin'
-          : s.face
-  const y = U
-  if (face === 'calm') {
-    rect(10, 6 + y, 12, 6 + y, 'H')
-    rect(15, 6 + y, 17, 6 + y, 'H')
-    rect(10, 8 + y, 12, 8 + y, 'E')
-    put(11, 9 + y, 'I')
-    rect(15, 8 + y, 17, 8 + y, 'E')
-    put(16, 9 + y, 'I')
-  } else if (face === 'sad') {
-    put(10, 7 + y, 'H')
-    put(11, 6 + y, 'H')
-    put(12, 6 + y, 'H')
-    put(17, 7 + y, 'H')
-    put(16, 6 + y, 'H')
-    put(15, 6 + y, 'H')
-    rect(10, 9 + y, 12, 9 + y, 'E')
-    rect(15, 9 + y, 17, 9 + y, 'E')
-  } else {
-    const by = face === 'grin' ? 5 : 6
-    put(10, by + y, 'H')
-    put(11, by + y, 'H')
-    put(12, by + 1 + y, 'H')
-    put(17, by + y, 'H')
-    put(16, by + y, 'H')
-    put(15, by + 1 + y, 'H')
-    rect(10, 8 + y, 12, 8 + y, 'E')
-    put(10, 9 + y, 'W')
-    put(11, 9 + y, 'I')
-    put(12, 9 + y, 'E')
-    rect(15, 8 + y, 17, 8 + y, 'E')
-    put(15, 9 + y, 'E')
-    put(16, 9 + y, 'I')
-    put(17, 9 + y, 'W')
+  // 귀: 왼쪽을 그리고 오른쪽은 x' = 27 - x 로 거울 (그늘 쪽이라 s)
+  const parts = faceParts(s)
+  const ear = EARS[parts.ears]
+  for (const [x, y0] of ear.px) {
+    put(x, y0 + U, 'S')
+    put(27 - x, y0 + U, 's')
   }
+  for (const [x, y0] of ear.inner ?? []) {
+    put(x, y0 + U, 'm')
+    put(27 - x, y0 + U, 'm')
+  }
+
+  // 얼굴 부위. 포즈가 표정을 덮어쓴다: 패배·벤치 → 처진 눈썹·울상, 환호 → 함성, 손 흔들기 → 미소
+  const y = U
+  let brows: Brows = parts.brows
+  let mouth: keyof typeof MOUTHS = parts.mouth
+  if (pose === 'sad' || pose === 'bench') {
+    brows = 'soft'
+    mouth = 'sad'
+  } else if (pose === 'cheer' || pose === 'trophy') mouth = 'shout'
+  else if (pose === 'wave') mouth = 'smile'
+  const B = BROWS[brows]
+  draw(B, 10, 5 + y)
+  draw(B.map(rev), 15, 5 + y)
+  const E = EYES[parts.eyes]
+  draw(E.l, 10, 8 + y)
+  draw(E.r ?? (E.same ? E.l : E.l.map(rev)), 15, 8 + y)
   put(14, 10 + y, 's')
-  if (face === 'grin') {
-    put(12, 11 + y, 'm')
-    rect(13, 12 + y, 14, 12 + y, 'm')
-    put(15, 11 + y, 'm')
-  } else if (face === 'shout') {
-    rect(12, 11 + y, 15, 11 + y, 'E')
-    rect(13, 12 + y, 14, 12 + y, 'Z')
-  } else if (face === 'sad') {
-    rect(13, 12 + y, 14, 12 + y, 'm')
-    put(12, 13 + y, 'm')
-    put(15, 13 + y, 'm')
-  } else rect(12, 12 + y, 14, 12 + y, 'm')
+  for (const [x, y0, k] of MOUTHS[mouth]) put(x, y0 + y, k)
   if (acc.has('bandaid')) rect(16, 10 + y, 17, 10 + y, 'D')
   if (acc.has('glasses'))
     draw(['QQQQ.QQQQ', 'Q..QQQ..Q', 'QQQQ.QQQQ'], 9, 7 + y)
@@ -536,6 +621,11 @@ export function build(
 
   // 앞머리 + 헤드밴드
   draw(hair[0], hair[1], hair[2] + U)
+  if (acc.has('earring')) {
+    const [x, y0] = ear.ring
+    put(x, y0 + U, 'G')
+    put(27 - x, y0 + U, 'G')
+  }
   if (acc.has('headband')) rect(8, 4 + U, 19, 4 + U, 'X')
   // 머리 위 치장: 모자·헤드폰·이어폰. 모자 위로 삐져나온 머리카락은 지운다
   const clearTop = () => {

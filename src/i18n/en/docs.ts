@@ -229,14 +229,14 @@ const docs: Record<string, string> = {
   '1. 선수 만들기': '1. Creating a player',
   '첫 화면의 「새로운 인생 시작하기」를 누르면 4단계로 선수를 만들어요.':
     'Press "Start a new life" on the first screen to build a player in 4 steps.',
-  '아바타: 외형과 등번호를 고릅니다. 등번호는 나중에 메인 화면에서 바꿀 수 있어요.':
-    'Avatar: pick a look and jersey number. You can change the number later on the main screen.',
+  '아바타: 기본 캐릭터를 고른 뒤 피부·헤어·눈·귀·입·장식을 부위별로 바꾸고 등번호를 정합니다. 상점 아이템은 구매 후에 착용할 수 있고, 등번호는 나중에 메인 화면에서 바꿀 수 있어요.':
+    'Avatar: pick a base character, then change skin, hair, eyes, ears, mouth and accessories part by part and set your jersey number. Shop items can be worn after you buy them, and you can change the number later on the main screen.',
   '기본 정보: 이름, 포지션(PG·SG·SF·PF·C), 플레이 스타일, 고등학교를 정합니다. 포지션은 오버롤 계산의 가중치와 시작 능력치 분포를, 스타일은 능력치 보너스를 정해요.':
     'Basics: name, position (PG·SG·SF·PF·C), play style and high school. Position sets the OVR weights and starting attribute spread; style adds attribute bonuses.',
-  '스카우팅 리포트: 뽑힌 능력치 7개와 신장·몸무게를 봅니다. 「능력치 재분배」로 합계 280 안에서 능력치마다 25~60 사이로 옮길 수 있고, 신장은 ±4cm 조절돼요. 몸무게가 적정 체중보다 무거우면 스피드가 깎여요.':
-    'Scouting report: see the 7 rolled attributes plus height and weight. "Redistribute" lets you move points within a total of 280, 25~60 per attribute, and height adjusts ±4cm. Weighing more than ideal costs speed.',
-  '집중 능력치: 첫 시즌 성장을 더 받을 능력치 하나를 고릅니다. 이후에는 매 오프시즌 다시 고를 수 있어요.':
-    'Focus attribute: choose one attribute to get extra growth in the first season. You can pick again every offseason.',
+  '스카우팅 리포트: 뽑힌 능력치 7개와 신장·몸무게를 봅니다. 「다시 뽑기」로 새로 뽑을 수 있고, 능력치마다 −/+로 합계 280 안에서 25~60 사이로 옮길 수 있어요. 신장은 ±4cm 조절되고, 몸무게가 적정 체중보다 무거우면 스피드가 깎여요.':
+    'Scouting report: see the 7 rolled attributes plus height and weight. "Reroll" draws again, and −/+ move points within a total of 280, 25~60 per attribute. Height adjusts ±4cm, and weighing more than ideal costs speed.',
+  '집중 능력치: 첫 시즌 성장을 더 받을 능력치 하나를 고릅니다. 화면에서 OVR이 오를 때 능력치마다 얼마씩 나눠 받는지 볼 수 있고, 이후에는 매 오프시즌 다시 고를 수 있어요.':
+    'Focus attribute: choose one attribute to get extra growth in the first season. The screen shows how much each attribute gets for every OVR gained, and you can pick again every offseason.',
   '화면의 오버롤은 지금 실력일 뿐이고, 커리어를 정하는 잠재력은 보이지 않아요. 오버롤과 잠재력은 서로 무관하게 뽑히므로 다시 뽑기로 오버롤을 올려도 잠재력이 좋아지는 건 아니에요. 잠재력은 초반 몇 시즌 오버롤이 얼마나 빨리 오르는지로 짐작할 수 있습니다.':
     'The OVR on screen is only your current level; the potential that decides your career is hidden. The two are rolled independently, so rerolling for a higher OVR does not improve potential. You can guess potential from how fast OVR climbs in the first few seasons.',
   '2. 한 시즌의 흐름': '2. How a season flows',

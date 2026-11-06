@@ -22,8 +22,10 @@ import {
   createPlayer,
   ethicBonus,
   grow,
+  growthPerOvr,
   overall,
   potentialGrade,
+  WEIGHTS,
   weightSpeedMod,
 } from './player'
 import { Rng } from './rng'
@@ -678,6 +680,25 @@ test('성장 분배: 99 능력치는 제외돼 오버롤 변화량이 줄지 않
     1,
   )
   expect(capped.attrs.rebounding).toBe(99)
+})
+
+test('생성 화면의 성장 분배(growthPerOvr)는 실제 성장의 능력치별 몫과 같다', () => {
+  for (const focus of [undefined, ...ATTR_KEYS]) {
+    const p = {
+      ...createPlayer(new Rng(3), 'x', 'PG', '플레이메이커'),
+      potential: 95,
+    }
+    const before = { ...p.attrs }
+    grow(new Rng(1), p, 16, 0.7, focus, 0)
+    const d = Object.fromEntries(
+      ATTR_KEYS.map((k) => [k, p.attrs[k] - before[k]]),
+    )
+    // 오버롤 1 당 오른 양 = 능력치 증가 / 가중 증가 합
+    const w = WEIGHTS.PG
+    const g = ATTR_KEYS.reduce((s, k) => s + w[k] * d[k], 0)
+    const share = growthPerOvr('PG', focus)
+    for (const k of ATTR_KEYS) expect(d[k] / g).toBeCloseTo(share[k], 6)
+  }
 })
 
 describe('잔류와 연장 계약', () => {

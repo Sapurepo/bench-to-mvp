@@ -37,7 +37,7 @@ export const POSITION_LABELS: Record<Position, string> = {
 }
 
 // 오버롤 = 포지션별 가중평균 (각 행 합계 1)
-const WEIGHTS: Record<Position, Attributes> = {
+export const WEIGHTS: Record<Position, Attributes> = {
   PG: {
     shooting: 0.2,
     finishing: 0.15,
@@ -261,6 +261,17 @@ function ageMult(age: number): number {
 // OVR 95 이상 양의 성장 절반, 97 이상 1/4
 export const topGrowthScale = (ovr: number) =>
   ovr >= 97 ? 0.25 : ovr >= 95 ? 0.5 : 1
+
+// OVR 이 1 오를 때 각 능력치가 오르는 양 (아래 grow 의 분배식). 노력치가 없고 99 인 능력치도 없는 생성 시점 기준.
+// 성장량 자체는 잠재력에 달려 있어 생성 화면에서는 이 분배만 보여 준다
+export function growthPerOvr(position: Position, focus?: AttrKey): Attributes {
+  const w = WEIGHTS[position]
+  const b = (k: AttrKey) => w[k] + 0.1 + (k === focus ? 0.2 : 0)
+  const denom = ATTR_KEYS.reduce((s, k) => s + w[k] * b(k), 0)
+  return Object.fromEntries(
+    ATTR_KEYS.map((k) => [k, b(k) / denom]),
+  ) as Attributes
+}
 
 // 한 시즌 성장(또는 노쇠). minutesShare = 평균 출전시간 / 경기 시간.
 export function grow(
