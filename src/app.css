@@ -415,7 +415,7 @@ footer .link {
     inset 0 -2px 0 0 var(--lo);
 }
 
-:is(.primary, .ghost, .option, .btn-cmd):disabled {
+:is(.primary, .ghost, .option, .btn-cmd, .roster-card):disabled {
   --face: var(--panel-sunk);
   --hi: var(--panel-sunk);
   --lo: var(--line);
@@ -5020,12 +5020,6 @@ button.spot:hover {
   font: 12px var(--font-pixel);
 }
 
-.roster {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
-  gap: 12px;
-}
-
 .roster-card {
   position: relative;
   display: grid;
@@ -5034,7 +5028,7 @@ button.spot:hover {
   padding: 14px 6px 10px;
 }
 
-.roster-card:hover:not([aria-pressed='true']) {
+.roster-card:hover:not([aria-pressed='true'], :disabled) {
   transform: translateY(-3px);
 }
 
@@ -5055,9 +5049,140 @@ button.spot:hover {
   font: 400 13px var(--font-pixel);
 }
 
-.roster-card small {
-  color: var(--gold-ink);
-  font: 11px var(--font-pixel);
+/* ── 아바타 꾸미기 ── */
+
+.av-name {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.av-stage {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+/* 벽 + 코트 바닥선 위에 선다 */
+.av-court {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-height: 252px;
+  margin: 3px;
+  padding-bottom: 12px;
+  background: linear-gradient(
+    to bottom,
+    var(--bg-wall) 0,
+    var(--bg-wall) calc(100% - 42px),
+    var(--accent-lo) calc(100% - 42px),
+    var(--accent-lo) calc(100% - 39px),
+    var(--accent-soft) calc(100% - 39px)
+  );
+  box-shadow:
+    0 -3px 0 0 var(--ink),
+    0 3px 0 0 var(--ink),
+    -3px 0 0 0 var(--ink),
+    3px 0 0 0 var(--ink);
+}
+
+.av-side {
+  flex: 1 1 190px;
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.av-face {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  margin: 2px;
+  padding: 12px 8px 8px;
+  background: var(--panel);
+  box-shadow:
+    0 -2px 0 0 var(--ink),
+    0 2px 0 0 var(--ink),
+    -2px 0 0 0 var(--ink),
+    2px 0 0 0 var(--ink);
+}
+
+.av-face figcaption {
+  font: 12px var(--font-pixel);
+}
+
+.av-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.av-editor {
+  gap: 20px;
+}
+
+.av-group {
+  display: grid;
+  gap: 10px;
+}
+
+.av-group-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.av-group-head h3 {
+  font: 400 14px var(--font-pixel);
+}
+
+.av-group-head small {
+  font-size: 12px;
+}
+
+.av-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+  gap: 10px;
+}
+
+.av-tiles .roster-card {
+  align-content: start;
+  padding: 12px 4px 8px;
+}
+
+.av-tiles .roster-card b {
+  text-align: center;
+  text-wrap: balance;
+  line-height: 1.3;
+}
+
+/* 상점 잠금: 꺼진 면 + 흑백 썸네일 */
+.av-tiles .roster-card:disabled img {
+  filter: grayscale(1);
+  opacity: 0.55;
+}
+
+.av-thumb {
+  display: block;
+  overflow: hidden;
+}
+
+.av-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.av-swatch {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  box-shadow: 0 0 0 2px var(--ink);
 }
 
 /* ── 로고 ───────────────────────────────── */

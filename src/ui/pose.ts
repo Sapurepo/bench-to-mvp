@@ -1,4 +1,4 @@
-import type { GameState } from '../engine/types'
+import type { GameState, Look } from '../engine/types'
 import { ko } from '../i18n'
 
 export type Pose =
@@ -30,6 +30,13 @@ export interface Kit {
   jersey: string
   number: string
 }
+
+export const kitSpec = (look: Look, kit: Kit) => ({
+  ...look,
+  jersey: kit.jersey,
+  // 흰 트림은 시안의 오프화이트로 (신발 포인트 색 규칙이 이 값을 본다)
+  trim: kit.number === '#ffffff' ? '#f7f3ea' : kit.number,
+})
 
 export function teamKit(teamId: string): Kit {
   let h = 0

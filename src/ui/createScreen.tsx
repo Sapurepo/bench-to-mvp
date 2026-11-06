@@ -18,20 +18,14 @@ import {
 import { clamp, Rng } from '../engine/rng'
 import type { AttrKey, Attributes, GameState, Position } from '../engine/types'
 import { AttrBars } from './attrBars'
-import { PixelPlayer } from './pixelPlayer'
-import { type Pose, teamKit } from './pose'
+import { AvatarEditor, type AvatarState } from './avatarEditor'
+import { teamKit } from './pose'
 import { ROSTER } from './sprite'
 import { tr } from '../i18n'
 
 const POSITIONS = Object.keys(POSITION_LABELS) as Position[]
 const randomSeed = () => crypto.getRandomValues(new Uint32Array(1))[0]
 const STEPS = ['아바타', '기본 정보', '스카우팅 리포트', '집중 능력치']
-const POSE_STRIP: [Pose, string][] = [
-  ['idle', '드리블'],
-  ['shoot', '슛'],
-  ['cheer', '환호'],
-  ['sad', '패배'],
-]
 
 export function CreateScreen({
   onStart,
@@ -46,8 +40,13 @@ export function CreateScreen({
   const [style, setStyle] = useState(STYLES.PG[0].name)
   const [school, setSchool] = useState(HIGH_SCHOOLS[0].id)
   const [seed, setSeed] = useState(randomSeed)
-  const [sel, setSel] = useState(0)
-  const [num, setNum] = useState<number | null>(null)
+  const [av, setAv] = useState<AvatarState>({
+    look: ROSTER[0].look,
+    base: 0,
+    modified: false,
+    tab: 'preset',
+    history: [],
+  })
   const [focus, setFocus] = useState<AttrKey | undefined>()
   // 스카우팅 리포트에서 손본 값. null 이면 뽑힌 값을 그대로 쓴다
   const [custom, setCustom] = useState<Attributes | null>(null)
@@ -55,7 +54,7 @@ export function CreateScreen({
   const [weight, setWeight] = useState<number | null>(null)
 
   const rng = new Rng(seed)
-  const look = { ...ROSTER[sel].look, num: num ?? ROSTER[sel].look.num }
+  const look = av.look
   const kit = teamKit(school)
   const base = createPlayer(
     rng,
@@ -101,58 +100,7 @@ export function CreateScreen({
         <h1>{tr(STEPS[step])}</h1>
       </header>
 
-      {step === 0 && (
-        <section className="panel panel-sunk pick">
-          <div className="pick-head">
-            <span className="tag gold">P1 SELECT</span>
-            <h2>
-              {tr(ROSTER[sel].name)}{' '}
-              <label className="num-field">
-                #
-                <input
-                  type="number"
-                  min={0}
-                  max={99}
-                  value={look.num}
-                  aria-label={tr('등번호')}
-                  onChange={(e) => {
-                    const n = clamp(Math.round(+e.target.value) || 0, 0, 99)
-                    // "07"처럼 숫자로는 같은 값이면 React 가 화면을 고치지 않아 앞자리 0이 남는다
-                    e.target.value = String(n)
-                    setNum(n)
-                  }}
-                />
-              </label>
-            </h2>
-            <div className="pose-strip">
-              {POSE_STRIP.map(([pose, label]) => (
-                <figure key={pose}>
-                  <PixelPlayer pose={pose} kit={kit} look={look} scale={2} />
-                  <figcaption>{tr(label)}</figcaption>
-                </figure>
-              ))}
-            </div>
-          </div>
-          <div className="roster" role="group" aria-label={tr('외형 선택')}>
-            {ROSTER.map((r, i) => (
-              <button
-                key={r.name}
-                className="roster-card"
-                aria-pressed={i === sel}
-                onClick={() => {
-                  setSel(i)
-                  setNum(null)
-                }}
-              >
-                {i === sel && <span className="tag gold">P1</span>}
-                <PixelPlayer pose="idle" kit={kit} look={r.look} />
-                <b>{tr(r.name)}</b>
-                <small>#{r.look.num}</small>
-              </button>
-            ))}
-          </div>
-        </section>
-      )}
+      {step === 0 && <AvatarEditor av={av} setAv={setAv} kit={kit} />}
 
       {step === 1 && (
         <section className="panel">
