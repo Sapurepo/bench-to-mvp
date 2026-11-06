@@ -33,15 +33,26 @@ export async function loadLang(l: Lang) {
 }
 const KEY = 'lang'
 
+// 검색엔진 봇은 en-US 브라우저로 렌더링한다. 브라우저 언어를 따르면 사이트가 영어로 색인되어
+// 한국어 검색에 안 잡히므로 봇에게는 기본 언어(한국어)를 준다
+// ponytail: UA 판별이라 영어·일본어 검색에는 안 잡힌다. 필요해지면 언어별 주소(/en, /ja)+hreflang 으로
+const BOT = /bot|crawl|spider|yeti|daum|inspectiontool/i
+
+export function pickLang(saved: string | null, nav: string, ua: string): Lang {
+  if (saved === 'ko' || saved === 'en' || saved === 'ja') return saved
+  if (BOT.test(ua)) return 'ko'
+  return nav.startsWith('ja') ? 'ja' : nav.startsWith('en') ? 'en' : 'ko'
+}
+
 function detect(): Lang {
+  let saved: string | null = null
   try {
-    const saved = localStorage.getItem(KEY)
-    if (saved === 'ko' || saved === 'en' || saved === 'ja') return saved
+    saved = localStorage.getItem(KEY)
   } catch {
     // 저장소 접근 불가
   }
-  const nav = typeof navigator === 'undefined' ? '' : navigator.language
-  return nav.startsWith('ja') ? 'ja' : nav.startsWith('en') ? 'en' : 'ko'
+  const n = typeof navigator === 'undefined' ? undefined : navigator
+  return pickLang(saved, n?.language ?? '', n?.userAgent ?? '')
 }
 
 let lang: Lang = detect()

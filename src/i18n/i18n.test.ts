@@ -7,7 +7,7 @@ import type { GameState } from '../engine/types'
 import { generateCast } from '../engine/commentary'
 import { ROSTER } from '../ui/sprite'
 import { formatMoney } from '../engine/events'
-import { ko, loadLang, setLang, type Text, tr, tx } from './index'
+import { ko, loadLang, pickLang, setLang, type Text, tr, tx } from './index'
 
 // 카탈로그를 미리 받아 두면 setLang 이 바로 바뀐다
 beforeAll(() => Promise.all([loadLang('en'), loadLang('ja')]))
@@ -162,5 +162,25 @@ describe('아바타 캐릭터 이름', () => {
     const miss = ROSTER.map((r) => r.name).filter((n) => tr(n) === n)
     setLang('ko')
     expect(miss).toEqual([])
+  })
+})
+
+describe('처음 언어 고르기', () => {
+  const chrome =
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36'
+  it('저장된 언어가 먼저, 없으면 브라우저 언어', () => {
+    expect(pickLang('ja', 'en-US', chrome)).toBe('ja')
+    expect(pickLang(null, 'en-US', chrome)).toBe('en')
+    expect(pickLang(null, 'ja-JP', chrome)).toBe('ja')
+    expect(pickLang(null, 'fr-FR', chrome)).toBe('ko')
+  })
+  it('검색엔진 봇은 브라우저 언어가 영어여도 한국어로 색인한다', () => {
+    for (const ua of [
+      'Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
+      'Mozilla/5.0 (compatible; Google-InspectionTool/1.0;)',
+      'Mozilla/5.0 (compatible; bingbot/2.0; +http://www.bing.com/bingbot.htm)',
+      'Mozilla/5.0 (compatible; Yeti/1.1; +https://naver.me/spd)',
+    ])
+      expect(pickLang(null, 'en-US', ua)).toBe('ko')
   })
 })
