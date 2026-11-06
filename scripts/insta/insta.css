@@ -1,0 +1,164 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background: #e8e2d4;
+  word-break: keep-all;
+}
+
+img {
+  image-rendering: pixelated;
+}
+
+/* 게시물 1080×1350: 위 72% 벽, 아래 나무 바닥 (OG 이미지와 같은 무대) */
+.post {
+  position: relative;
+  width: 1080px;
+  height: 1350px;
+  overflow: hidden;
+  background:
+    linear-gradient(#e8e2d4 0 72%, #1a1715 72% calc(72% + 8px), transparent 0),
+    repeating-linear-gradient(90deg, #d49a5e 0 72px, #c98b52 72px 144px);
+}
+
+.copy {
+  position: absolute;
+  inset: 96px 88px auto;
+  display: grid;
+  gap: 24px;
+}
+
+.kicker {
+  justify-self: start;
+  padding: 8px 18px;
+  background: #1a1715;
+  color: #f2c14e;
+  font:
+    400 32px 'Galmuri11',
+    monospace;
+}
+
+h1 {
+  color: #1a1715;
+  font:
+    400 104px/1.12 'Galmuri11',
+    monospace;
+  white-space: pre-line;
+}
+
+.body {
+  color: #3d3631;
+  font:
+    700 38px/1.5 'Noto Sans KR',
+    sans-serif;
+}
+
+.vs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 14px 22px;
+  align-items: baseline;
+}
+
+.vs dt {
+  padding: 2px 14px;
+  background: #f07a2b;
+  color: #fffdf7;
+  font:
+    400 30px 'Galmuri11',
+    monospace;
+}
+
+.vs dt:nth-of-type(2) {
+  background: #1d8a57;
+}
+
+.vs dd {
+  margin: 0;
+  font-size: 34px;
+}
+
+/* 캐릭터는 바닥선(72%) 조금 아래에 발을 딛는다 */
+.art {
+  position: absolute;
+  inset: auto 0 150px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 28px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, auto);
+  justify-content: center;
+  gap: 12px 30px;
+}
+
+/* 얼굴 확대: 머리만 보이게 위쪽을 자른다 */
+.busts {
+  display: flex;
+  gap: 36px;
+}
+
+.bust {
+  display: flex;
+  justify-content: center;
+  width: 280px;
+  height: 300px;
+  overflow: hidden;
+  background: #fffdf7;
+  box-shadow:
+    0 -5px 0 0 #1a1715,
+    0 5px 0 0 #1a1715,
+    -5px 0 0 0 #1a1715,
+    5px 0 0 0 #1a1715;
+}
+
+.bust img {
+  margin-top: -20px;
+}
+
+footer {
+  position: absolute;
+  inset: auto 64px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font:
+    400 34px 'Galmuri11',
+    monospace;
+}
+
+.handle,
+.page {
+  color: #fffdf7;
+  text-shadow: 3px 3px 0 #1a1715;
+}
+
+.cta {
+  padding: 12px 22px;
+  background: #f2c14e;
+  color: #1a1715;
+  box-shadow:
+    0 -4px 0 0 #1a1715,
+    0 4px 0 0 #1a1715,
+    -4px 0 0 0 #1a1715,
+    4px 0 0 0 #1a1715;
+}
+
+/* 하이라이트 커버 1080×1920: 가운데 원 안에 아이콘 */
+.cover {
+  display: grid;
+  place-items: center;
+  width: 1080px;
+  height: 1920px;
+}
+
+.cover img {
+  width: 420px;
+  height: auto;
+  filter: drop-shadow(10px 10px 0 rgb(0 0 0 / 0.25));
+}
