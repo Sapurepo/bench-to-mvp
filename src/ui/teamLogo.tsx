@@ -1,17 +1,27 @@
 import { useState } from 'react'
 import { tr } from '../i18n'
+import { HIGH_SCHOOLS } from '../data/schools'
 import { KBL_TEAMS, NBA_TEAMS } from '../data/teams'
 import { flagURL } from './flagArt'
 import { teamKit } from './pose'
 
-// 프로 구단만 로고가 있다. 학교·상무 등은 팀 색 배지로 대체.
+// 프로 구단과 고교(교표: 각 학교 공식 홈페이지 학교상징에서 잘라 96px PNG)만 로고가 있다.
+// 대학·상무 등은 팀 색 배지로 대체.
 const PRO = new Map<string, string>([
   ...KBL_TEAMS.map((t): [string, string] => [t.id, `/logos/kbl/${t.id}.svg`]),
   ...NBA_TEAMS.map((t): [string, string] => [t.id, `/logos/nba/${t.id}.svg`]),
 ])
-const BY_NAME = new Map(
-  [...KBL_TEAMS, ...NBA_TEAMS].map((t) => [t.name, PRO.get(t.id)!]),
-)
+// 고교는 이름으로만 찾는다 (id 가 구단과 겹친다: 안양고 'anyang')
+const BY_NAME = new Map([
+  ...[...KBL_TEAMS, ...NBA_TEAMS].map((t): [string, string] => [
+    t.name,
+    PRO.get(t.id)!,
+  ]),
+  ...HIGH_SCHOOLS.map((s): [string, string] => [
+    s.name,
+    `/logos/hs/${s.id}.png`,
+  ]),
+])
 const NAME = new Map([...KBL_TEAMS, ...NBA_TEAMS].map((t) => [t.id, t.name]))
 
 export function TeamLogo({
@@ -25,7 +35,10 @@ export function TeamLogo({
 }) {
   // 로고 파일을 못 불러오면 배지로 대체
   const [broken, setBroken] = useState<string>()
-  const src = (teamId && PRO.get(teamId)) || BY_NAME.get(name)
+  // 학교 id 가 구단 id 와 겹칠 수 있어(안양고 'anyang' = 안양 정관장) 이름이 오면 이름이 맞을 때만 id 로 찾는다
+  const byId =
+    teamId && (!name || NAME.get(teamId) === name) ? PRO.get(teamId) : undefined
+  const src = byId || BY_NAME.get(name)
   if (src && src !== broken) {
     return (
       <img
